@@ -9,6 +9,10 @@ import PINATA_KEYS from "../Pinata/keys";
 import { erc721, erc20, nft_marketplace } from "../abi";
 import { ethers } from "ethers";
 
+// For settign gas price to prevent metamask errors
+const GAS_PRICE = 2 * 1e9
+const GAS_LIMIT = 1 * 1e9
+
 export const DBContext = createContext();
 
 // class MarketItem {
@@ -31,11 +35,18 @@ export const DBContextProvider = ({ children }) => {
   // save thae data in the state
 
   useEffect(() => {
+    // Checks if the wallet connected and 
+    // Checks what network has been connected 
+
     checkIfWalletIsConnected();
     if (network === "Polygon Mumbai Testnet") {
     }
   }, []);
 
+ 
+  // Checks for the wallet connection
+  // If  connected it will get the account
+  // and stores in the state
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
     if (ethereum) {
@@ -52,7 +63,8 @@ export const DBContextProvider = ({ children }) => {
     } else {
       console.log("No autharized account found");
     }
-
+    // Gets the chain id and fetches the 
+    // network and adds the network to the state
     const chainId = await ethereum.request({ method: "eth_chainId" });
     setNetwork(networks[chainId]);
     ethereum.on("chainChanged", handleChainChanged);
@@ -62,6 +74,9 @@ export const DBContextProvider = ({ children }) => {
       window.location.reload();
     }
   };
+
+  // Method triggerd when we are trying to connect
+  // to the wallet 
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -93,6 +108,7 @@ export const DBContextProvider = ({ children }) => {
     }
   };
 
+  // For uploading fiel to Pinata storage
   const uploadFile = async (file, onError) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -118,6 +134,13 @@ export const DBContextProvider = ({ children }) => {
     }
   };
 
+  
+/**
+ * Get contract methods for each contract
+ * Creates contract instences with abi and addresses 
+ * and @returns contract instance to interact
+ * 
+ */
   const getNFTMinterContract = () => {
     const { ethereum } = window;
     if (!window) {
@@ -160,6 +183,11 @@ export const DBContextProvider = ({ children }) => {
     return transactionContract;
   };
 
+
+  /**
+   * For minting erc721 token 
+   * @param ipfsUrl : Ipfs URI string for storing
+   */
   const mintERC721NFT = async (ipfsUrl: string) => {
     console.log(`The ipfs url is ${ipfsUrl}`);
     const nftMInterContract = getNFTMinterContract();
@@ -176,6 +204,12 @@ export const DBContextProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Fetches the tokens of the owner 
+   * and returns the 
+   * @returns arry of tokensids for the owner
+   */
+
   const listTokensOfOwner = async () => {
     console.log(
       "Listing the Tokens of the owner....",
@@ -188,7 +222,6 @@ export const DBContextProvider = ({ children }) => {
     if (!totalTokens || totalTokens <= 0) {
       return [];
     }
-    //let owner = "0xB3b1292ED00c0fB7f308A3bA99ac4537e7AE1D60";
     const userTokens = [];
     for (let i = 1; i <= totalTokens; i++) {
       const tokenId = i;
@@ -203,6 +236,14 @@ export const DBContextProvider = ({ children }) => {
     console.log("user tokens", userTokens);
     return userTokens;
   };
+
+  /**
+   * Fuction that takes nft ids as input and fetches
+   * the NFT uris from the contract and returns the
+   * nft URIs as output. 
+   * @param nftIds Takes NFT ids as an input 
+   * @returns token uris for the tokens
+   */
 
   const fetchTokensUri = async (nftIds: [string]) => {
     const token = getNFTMinterContract();
@@ -224,7 +265,14 @@ export const DBContextProvider = ({ children }) => {
     console.log("tokens uris", tokenUris);
     return tokenUris;
   };
+ 
 
+
+  /**
+   * For approving NFT before listing the token
+   * @param tokenId Id of the token 
+   * @returns  true: if the approved and false: if not approved
+   */
   const approveNFTForMarketplaceListing = async (tokenId) => {
     if (!tokenId) {
       return alert("Token Id is empty");
@@ -239,7 +287,12 @@ export const DBContextProvider = ({ children }) => {
       return false;
     }
   };
-
+/**
+ * List the token in the marketplace
+ * @param tokenId : token id for the token that want to list 
+ * @param price  price in integer
+ * @returns null: if listing is successfull, error: if not successfull
+ */
   const listTokenForMarket = async (tokenId, price) => {
     console.log(tokenId, price);
     const marketplace = getNFTMarketPlaceContract();
@@ -259,6 +312,12 @@ export const DBContextProvider = ({ children }) => {
     }
   };
 
+  /**
+   * fetches the marketplace items from the market
+   * smart contract and returns items that are listed 
+   * @returns arry of market items that are listed.
+   */
+
   const fetchMarketplaceItems = async () => {
     const marketplace = getNFTMarketPlaceContract();
     try {
@@ -271,13 +330,25 @@ export const DBContextProvider = ({ children }) => {
       return setMarketplaceItems([]);
     }
   };
-
-  const approveUSDCtoken = async (amount, spender) => {
+  /**
+   * Approve the stable coin tokens to spend by the marketplace
+   * smart contract, so that if the purchase happen, tose tokens 
+   * will be transferd to the owner. 
+   * @param amount price of the nft
+   * @param spender the marketplace contract address
+   * @returns true if approved and false if not approved 
+   */
+  const approveUSDCtoken = async (amount) => {
     const price = ethers.utils.parseEther(amount.toString());
+    // NFT marketplace will act as spender for tokens
+    const {  address  } = nft_marketplace;
+     const marketPleace = ethers.utils.getAddress(address)
+     console.log(address , marketPleace);
     try {
       const token = getUSDTContract();
-      await token.approve(spender, price, {
-        gasLimit: "1000000000",
+      await token.approve(marketPleace, price, {
+        gasPrice: GAS_PRICE,
+        //gasLimit: GAS_LIMIT
       });
       return true;
     } catch (error) {
@@ -285,7 +356,13 @@ export const DBContextProvider = ({ children }) => {
       return false;
     }
   };
-
+  
+  /**
+   * 
+   * @param marketplaceId : The id of the marketplace
+   * @returns  null if the process is successfull
+   * or error if there is an error
+   */
   const buyMarketplaceNFT = async (marketplaceId) => {
     if (!marketplaceId) {
       return alert("No marketplace id provided ");
@@ -294,7 +371,8 @@ export const DBContextProvider = ({ children }) => {
     const marketplace = getNFTMarketPlaceContract();
     try {
       const tx = await marketplace.buyNFT(marketplaceId, {
-        gasLimit: "1000000000",
+        gasPrice: GAS_PRICE,
+        gasLimit: GAS_LIMIT,
       });
       await tx.wait();
       console.log(tx.hash);

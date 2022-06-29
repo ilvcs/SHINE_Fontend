@@ -8,9 +8,9 @@ export const erc721 = {
 };
 export const erc20 = {
   abi: ERC20.abi,
-  address: "0xD7b68893cbbE99F2005663AF675fBEeecA2e0Ee7",
+  address: "0x67c5518B7f3ea8397C9C6e98598B8A737B462289",
 };
 export const nft_marketplace = {
   abi: NFTMarketplace.abi,
-  address: "0xfc8529F6c3BE7b0345aF1bd0fC7d42b5e2cd67d0",
+  address: "0x9189F01E93D85B3b71551d949e1d76e38D868C07",
 };

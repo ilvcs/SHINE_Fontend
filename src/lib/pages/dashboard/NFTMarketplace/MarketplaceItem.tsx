@@ -52,8 +52,7 @@ const MarketPlaceItem = ({ itemData }) => {
     if (!isApproved) {
       setLoading(true);
       const approve = await approveUSDCtoken(
-        itemData.price.toString(),
-        itemData.owner
+        itemData.price.toString()
       );
       console.log(`Is approved ${approve}`);
       if (approve) {
