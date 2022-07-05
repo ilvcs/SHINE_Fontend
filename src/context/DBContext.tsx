@@ -6,7 +6,7 @@ import { networks } from "../utils/network";
 import { app, auth, db, functions } from "../firebase/firebaseConfig";
 import PINATA_KEYS from "../Pinata/keys";
 
-import { erc721, erc20, nft_marketplace } from "../abi";
+import { erc721, erc20, nft_marketplace ,erc20_minter_onDemand} from "../abi";
 import { ethers } from "ethers";
 
 // For settign gas price to prevent metamask errors
@@ -30,6 +30,7 @@ export const DBContextProvider = ({ children }) => {
   const [account, setAccount] = useState();
   const [network, setNetwork] = useState("");
   const [marketPlaceItems, setMarketplaceItems] = useState([]);
+  const [SUSDCBalance, setSUSDCBalance] = useState(0)
   // Whenever the app loads this will fetch
   // account information from the blockchain and
   // save thae data in the state
@@ -182,6 +183,20 @@ export const DBContextProvider = ({ children }) => {
     //console.log(provider, signer, transactionContract)
     return transactionContract;
   };
+
+  const getERC20_onDemandMinter = () => {
+     const { ethereum } = window;
+    if (!window) {
+      return console.log("NO ethereum found");
+    } 
+   const { abi, address } =erc20_minter_onDemand
+   const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    console.log(address);
+    const onDemandMinter = new ethers.Contract(address, abi, signer);
+    return onDemandMinter;
+
+  }
 
 
   /**
@@ -383,6 +398,50 @@ export const DBContextProvider = ({ children }) => {
     }
   };
 
+  /**
+   * on demand Stablecoin Minter
+   */
+
+  const getUserSUSDCBalance = async() => {
+    if(!account) {
+      console.log(`User account address is not defined ${account}`);
+      return 
+    }
+    try {
+      const getMinterContract = getERC20_onDemandMinter()
+      const userTokens = await getMinterContract.balanceOf(account)
+      console.log(`Balance Of the user ${userTokens}`);
+      setSUSDCBalance(userTokens) 
+    } catch (error) {
+      console.log(`Cant get user balance ${error}`);
+       setSUSDCBalance(0)
+    }
+  }
+
+  const mintUserStableCoins= async(amount) => {
+
+    if(!account) {
+      console.log(`User account address is not defined ${account}`);
+      return 
+    }
+    if(!amount || amount < 1){
+      return alert('Please enter the number of tokens needs to be minted')
+    }
+    const getMinterContract = getERC20_onDemandMinter()
+    const amountInWei = ethers.utils.parseEther(amount.toString());
+    try {
+      
+      const tx = await getMinterContract.mintForUser(amountInWei)
+      await tx.wait()
+      console.log(`Successfully Minted Tokens ${tx.hash}`)
+      
+    } catch (error) {
+      console.log(`Can't able to mint tokens ${error}`);
+      return alert(`Can't able to mint SUSDC ${error}`)
+    }
+
+  }
+
   return (
     <DBContext.Provider
       value={{
@@ -397,8 +456,11 @@ export const DBContextProvider = ({ children }) => {
         fetchMarketplaceItems,
         buyMarketplaceNFT,
         approveUSDCtoken,
+        getUserSUSDCBalance,
+        mintUserStableCoins,
         account,
         marketPlaceItems,
+        SUSDCBalance,
       }}
     >
       {children}

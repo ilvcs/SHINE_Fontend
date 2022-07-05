@@ -11,13 +11,13 @@ let auth = null;
 let db = null;
 let storage = null;
 const firebaseConfig = {
-  apiKey: "AIzaSyCv2XVqSqKGWFN_qJ_Xevl5bIKgue2VC3o",
-  authDomain: "shine-38d71.firebaseapp.com",
-  projectId: "shine-38d71",
-  storageBucket: "shine-38d71.appspot.com",
-  messagingSenderId: "286854755944",
-  appId: "1:286854755944:web:99eca9121a6b7270a6eddd",
-  measurementId: "G-Z1EH0H7Q6M",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // We only initialize if the app hasn't initialized

@@ -1,6 +1,7 @@
 import ERC721_Minter from "./ERC721_Minter.json";
 import ERC20 from "./ERC20.json";
 import NFTMarketplace from "./NFTMarketplace.json";
+import ERC20_Minter_OnDemand from './ERC20_Minter_OnDemand.json'
 
 export const erc721 = {
   abi: ERC721_Minter.abi,
@@ -14,3 +15,8 @@ export const nft_marketplace = {
   abi: NFTMarketplace.abi,
   address: "0x9189F01E93D85B3b71551d949e1d76e38D868C07",
 };
+
+export const erc20_minter_onDemand = {
+  abi: ERC20_Minter_OnDemand.abi,
+  address: "0x907Cb90455f47F8E93fCBfEA31C1614A5e49D8B4"
+}
