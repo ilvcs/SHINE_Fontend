@@ -3,8 +3,8 @@ import { networks } from "../utils/network";
 ////import { db } from '../firebase'
 // import { storage } from "../firebase";
 //import { ref, uploadString, getDownloadURL } from 'firebase/storage'
-import { app, auth, db, functions } from "../firebase/firebaseConfig";
-import PINATA_KEYS from "../Pinata/keys";
+//import { app, auth, db, functions } from "../firebase/firebaseConfig";
+
 
 import { erc721, erc20, nft_marketplace ,erc20_minter_onDemand} from "../abi";
 import { ethers } from "ethers";
