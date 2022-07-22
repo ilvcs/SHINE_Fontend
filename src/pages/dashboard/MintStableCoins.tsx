@@ -2,6 +2,7 @@ import { VStack,Text, Input, Button } from '@chakra-ui/react'
 import {useState, useContext, useEffect} from 'react'
 import {DBContext} from '../../context/DBContext';
 import { ethers } from 'ethers';
+import Links from '../../lib/components/links';
 
 function MintStableCoins() {
   const {SUSDCBalance, getUserSUSDCBalance,mintUserStableCoins, account} = useContext(DBContext)
@@ -27,6 +28,7 @@ function MintStableCoins() {
   
   return (
     <VStack minH='70vh' w='full'>
+      <Links />
       <VStack w='full' border='1px' p={8} borderRadius='10' borderColor='brand.100'>
         <Text fontSize='lg'>SHINE Stable Coin Balance</Text>
         <Text fontWeight='bold'>{`${ethers.utils.formatEther(SUSDCBalance)} SUSDC`}</Text>
@@ -43,7 +45,7 @@ function MintStableCoins() {
           isLoading={loading} 
           loadingText='Minting SUSDC' 
           onClick={mintTokens}
-          pt={4}
+         
           >Mint SUSDC</Button>
 
         </VStack>

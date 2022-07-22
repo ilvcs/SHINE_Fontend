@@ -11,8 +11,9 @@ import React, { useState, useEffect } from "react";
 import { app, auth, db, functions } from "../../../firebase/firebaseConfig";
 import { httpsCallable } from "firebase/functions";
 import axios from "axios";
-const SEND_SHINE_TOKENS_URL =
-  "http://localhost:5001/shine-38d71/us-central1/sentShineTokens";
+const SEND_SHINE_TOKENS_URL_LOCAL = "http://localhost:5001/shine-38d71/us-central1/sentShineTokens";
+const SEND_SHINE_TOKENS_URL = ' https://us-central1-shine-38d71.cloudfunctions.net/sentShineTokens'
+  
 const StartWorking = () => {
   const [loading, setloading] = useState(false);
   const [inputError, setInputError] = useState("");
@@ -64,7 +65,7 @@ const StartWorking = () => {
       borderWidth={1}
       borderColor="brand.100"
     >
-      <Heading size="md">Start Working With SHINE</Heading>
+      <Heading size="md"> SHINE Faucet</Heading>
       <VStack w="full" spacing={4} pt={6}>
         <Input
           placeholder="Paste your ETH address here"

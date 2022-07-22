@@ -419,6 +419,7 @@ export const DBContextProvider = ({ children }) => {
   }
 
   const mintUserStableCoins= async(amount) => {
+    console.log(`Token amount is ${amount}`)
 
     if(!account) {
       console.log(`User account address is not defined ${account}`);
@@ -431,13 +432,16 @@ export const DBContextProvider = ({ children }) => {
     const amountInWei = ethers.utils.parseEther(amount.toString());
     try {
       
-      const tx = await getMinterContract.mintForUser(amountInWei)
+      const tx = await getMinterContract.mintForUser(amountInWei,  {
+        gasPrice: GAS_PRICE,
+        //gasLimit: GAS_LIMIT
+      })
       await tx.wait()
       console.log(`Successfully Minted Tokens ${tx.hash}`)
       
     } catch (error) {
-      console.log(`Can't able to mint tokens ${error}`);
-      return alert(`Can't able to mint SUSDC ${error}`)
+      console.log(`Can't able to mint tokens ${error.message}`);
+      return alert(`Can't able to mint SUSDC ${error.message}`)
     }
 
   }

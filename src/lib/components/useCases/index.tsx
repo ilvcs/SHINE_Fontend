@@ -17,14 +17,19 @@ const USECASES = [
     link: "/dashboard/NftMinter",
   },
   {
+    title: "NFT Marketplace",
+    image: "",
+    link: "/dashboard/NFTMarketPlace",
+  },
+  {
     title: "Defi",
     image: "",
     link: "",
   },
   {
-    title: "ERC20 tokens",
+    title: "ERC20 Token Minter",
     image: "",
-    link: "",
+    link: "/dashboard/MintStableCoins",
   },
   {
     title: "Token Bridging",
@@ -51,7 +56,9 @@ const UseCases = () => {
       <VStack align="center" justify="center" onClick={handleOnClick}>
         <Button
           variant="outline"
-          leftIcon={<BsFillPatchCheckFill color="green" />}
+          leftIcon={link.length > 10 && <BsFillPatchCheckFill color="green" />  }
+          isDisabled ={ link.length < 10}
+        
         >
           <Text>{title}</Text>
         </Button>
@@ -68,6 +75,7 @@ const UseCases = () => {
             title={eachUseCase.title}
             image={eachUseCase.image}
             link={eachUseCase.link}
+            
           />
         ))}
       </Wrap>

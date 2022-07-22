@@ -1,7 +1,3 @@
-const INFURA_PROJECT_ID = "2AbeihaRlDEstXal6QqV5pAFHGS";
-const INFURA_PROJECT_SECRET = "3c36cf9c84ed3854b6c4ebee993e12dd";
-const INFURA_IPFS_API_ENDPOINT = "https://ipfs.infura.io:5001";
-const contractAddress = "0x89eE595079a3445f1981aaDb830CAfBe5B739f8b";
 import {
   HStack,
   VStack,
@@ -12,7 +8,7 @@ import {
   Input,
   Text,
   Heading,
-  Wrap,
+  Textarea,
   Spinner,
 } from "@chakra-ui/react";
 import React, { useState, useRef, useContext } from "react";
@@ -156,16 +152,17 @@ const NftMinter = () => {
           </Button>
         </VStack>
         <Box w="60%" pt={4}>
-          <VStack w="full" pl={8}>
+          <VStack w="full" pl={8} spacing={8}>
             <Input
               placeholder="Name"
+              value={name}
               variant="flushed"
               onChange={(e) => setName(e.target.value)}
             />
-            <Input
+            <Textarea
+            value={description}
               placeholder="Description"
-              variant="flushed"
-              onChange={(e) => setDescriptio(e.target.value)}
+             onChange={(e) => setDescriptio(e.target.value)}
             />
 
             {fields.map((eachField) => (
@@ -175,9 +172,7 @@ const NftMinter = () => {
               </HStack>
             ))}
             <Spacer />
-            <Button variant="ghost" onClick={addField}>
-              + Add extra field
-            </Button>
+           
           </VStack>
         </Box>
       </HStack>
