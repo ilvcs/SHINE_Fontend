@@ -1,5 +1,4 @@
 import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
-import { AddShineToMetamask } from "../../../helpers/walletFunctions";
 import React from "react";
 
 const Hero = ({click}) => {

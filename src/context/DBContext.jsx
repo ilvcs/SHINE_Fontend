@@ -13,7 +13,7 @@ import { ethers } from "ethers";
 const GAS_PRICE = 2 * 1e9
 const GAS_LIMIT = 1 * 1e9
 
-export const DBContext = createContext();
+export const DBContext = createContext(null);
 
 // class MarketItem {
 //   constructor(data) {
@@ -40,8 +40,7 @@ export const DBContextProvider = ({ children }) => {
     // Checks what network has been connected 
 
     checkIfWalletIsConnected();
-    if (network === "Polygon Mumbai Testnet") {
-    }
+    
   }, []);
 
  
@@ -129,7 +128,7 @@ export const DBContextProvider = ({ children }) => {
 
       const data = await response.json();
 
-      return data.IpfsHash as string;
+      return data.IpfsHash.toString();
     } catch (error) {
       onError({ error });
     }
@@ -203,7 +202,7 @@ export const DBContextProvider = ({ children }) => {
    * For minting erc721 token 
    * @param ipfsUrl : Ipfs URI string for storing
    */
-  const mintERC721NFT = async (ipfsUrl: string) => {
+  const mintERC721NFT = async (ipfsUrl ) => {
     console.log(`The ipfs url is ${ipfsUrl}`);
     const nftMInterContract = getNFTMinterContract();
 
@@ -260,7 +259,7 @@ export const DBContextProvider = ({ children }) => {
    * @returns token uris for the tokens
    */
 
-  const fetchTokensUri = async (nftIds: [string]) => {
+  const fetchTokensUri = async (nftIds) => {
     const token = getNFTMinterContract();
     if (!nftIds || nftIds.length < 1) {
       return [];

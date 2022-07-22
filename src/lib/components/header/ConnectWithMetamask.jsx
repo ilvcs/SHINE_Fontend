@@ -1,7 +1,7 @@
 import { HStack, Button, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { useEthers } from "@usedapp/core";
-import { ConnectWallet } from "../../../helpers/walletFunctions";
+//import { ConnectWallet } from "../../../helpers/walletFunctions";
 import { useContext } from "react";
 import { DBContext } from "../../../context/DBContext";
 import {shortenAddress} from '../../../helpers/walletFunctions'
