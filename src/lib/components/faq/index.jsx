@@ -53,7 +53,7 @@ function FAQ() {
       <Accordion w='full' >
          {
         questions.map(eachQuestion => {
-          return <FAQTile questionData={eachQuestion}/>
+          return <FAQTile questionData={eachQuestion} key={`${Math.random() } - faq`}/>
         })
       }
       </Accordion>
